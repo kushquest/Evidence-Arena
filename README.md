@@ -100,3 +100,15 @@ To maximize epistemic diversity and eliminate positional bias:
 ---
 
 *EvidenceArena: Moving beyond discovery to true scientific scrutiny.*
+
+---
+
+## ⚖️ Legal & Licensing
+
+**Copyright (c) 2026 Kushagra Shiromani. All Rights Reserved.**
+
+This project is **Proprietary Software**. No license is granted for public use, modification, or distribution. 
+
+*   **View Only:** This code is published on GitHub for architectural demonstration and peer review purposes only.
+*   **Permissions:** You may NOT run, copy, or modify this code without explicit written permission from the author.
+*   **Contact:** If you are interested in using EvidenceArena for research or commercial purposes, please contact the author via GitHub.
