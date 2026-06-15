@@ -6,9 +6,9 @@ load_dotenv()
 class Config:
     LLM_PROVIDER = "gemini"
 
-    # Security setting: Restrict to specific models (e.g., ['gemini-3.5-flash'])
-    # Leave empty [] to allow all models
-    ALLOWED_MODELS = ["gemini-3.5-flash"]
+    # Security setting: Restrict to specific models
+    # Can be overridden in Streamlit Secrets
+    ALLOWED_MODELS = ["gemini-1.5-flash", "gemini-2.0-flash", "gemini-1.5-pro"]
 
     # Google Cloud ADC settings
     GOOGLE_CLOUD_PROJECT = os.getenv("GOOGLE_CLOUD_PROJECT", "your-project-id")
@@ -123,12 +123,20 @@ class Config:
                 credentials=credentials
             )
             
+            allowed = cls.ALLOWED_MODELS
+            try:
+                import streamlit as st
+                if hasattr(st, "secrets") and st.secrets and "ALLOWED_MODELS" in st.secrets:
+                    allowed = list(st.secrets["ALLOWED_MODELS"])
+            except Exception:
+                pass
+
             available = []
             for m in client.models.list():
                 name = m.name
                 if 'gemini' in name.lower() and 'embedding' not in name.lower():
                     display_name = name.split('/')[-1]
-                    if not cls.ALLOWED_MODELS or any(allowed in display_name for allowed in cls.ALLOWED_MODELS):
+                    if not allowed or any(a in display_name for a in allowed):
                         available.append(display_name)
             
             available = list(set(available))
@@ -138,7 +146,7 @@ class Config:
                 'preview' in name.lower(),
                 name
             ))
-            return available if available else ['gemini-3.5-flash']
+            return available if available else ['gemini-1.5-flash']
         except Exception as e:
             print(f"⚠️ Could not fetch Gemini model list: {e}")
-            return ['gemini-3.5-flash']
+            return ['gemini-1.5-flash']
