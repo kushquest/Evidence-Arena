@@ -147,16 +147,9 @@ if "audits_run" not in st.session_state:
 # --- MAIN UI ---
 st.markdown("<div class='main-header'>⚔️ EvidenceArena</div>", unsafe_allow_html=True)
 
-with st.sidebar:
-    st.header("⚙️ Configuration")
-    from core.config import Config
-    if "available_models" not in st.session_state:
-        st.session_state.available_models = Config.get_available_gemini_models()
-    selected_model = st.selectbox("Select Model", options=st.session_state.available_models, index=0)
-    Config.GEMINI_MODEL = selected_model
-    if st.button("🔄 Refresh Models"):
-        st.session_state.available_models = Config.get_available_gemini_models()
-        st.rerun()
+# Initialize Config
+from core.config import Config
+Config.GEMINI_MODEL = "gemini-2.5-flash"
 
 # --- STEP 1: VISION INPUT ---
 if st.session_state.step == "input":

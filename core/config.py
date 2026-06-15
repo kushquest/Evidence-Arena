@@ -6,16 +6,12 @@ load_dotenv()
 class Config:
     LLM_PROVIDER = "gemini"
 
-    # Security setting: Restrict to specific models
-    # Can be overridden in Streamlit Secrets
-    ALLOWED_MODELS = ["gemini-2.5-flash", "gemini-2.5-pro"]
-
     # Google Cloud ADC settings
     GOOGLE_CLOUD_PROJECT = os.getenv("GOOGLE_CLOUD_PROJECT", "your-project-id")
     GOOGLE_CLOUD_LOCATION = os.getenv("GOOGLE_CLOUD_LOCATION", "us-central1")
 
-    # Model will be set by UI
-    GEMINI_MODEL = None
+    # Active model configuration
+    GEMINI_MODEL = "gemini-2.5-flash"
 
     # PubMed settings
     PUBMED_API_KEY = os.getenv("PUBMED_API_KEY", "")
@@ -109,44 +105,4 @@ class Config:
 
         return credentials, project
 
-    @classmethod
-    def get_available_gemini_models(cls) -> list:
-        """Dynamically fetch available, sorted Gemini models from Vertex AI."""
-        try:
-            from google import genai
-            
-            credentials, project = cls.get_gcp_credentials()
-            client = genai.Client(
-                vertexai=True, 
-                project=project or cls.GOOGLE_CLOUD_PROJECT, 
-                location=cls.GOOGLE_CLOUD_LOCATION,
-                credentials=credentials
-            )
-            
-            allowed = cls.ALLOWED_MODELS
-            try:
-                import streamlit as st
-                if hasattr(st, "secrets") and st.secrets and "ALLOWED_MODELS" in st.secrets:
-                    allowed = list(st.secrets["ALLOWED_MODELS"])
-            except Exception:
-                pass
 
-            available = []
-            for m in client.models.list():
-                name = m.name
-                if 'gemini' in name.lower() and 'embedding' not in name.lower():
-                    display_name = name.split('/')[-1]
-                    if not allowed or any(a in display_name for a in allowed):
-                        available.append(display_name)
-            
-            available = list(set(available))
-            available.sort(key=lambda name: (
-                'pro' not in name.lower(), 
-                'flash' not in name.lower(), 
-                'preview' in name.lower(),
-                name
-            ))
-            return available if available else ['gemini-2.5-flash']
-        except Exception as e:
-            print(f"⚠️ Could not fetch Gemini model list: {e}")
-            return ['gemini-2.5-flash']
