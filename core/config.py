@@ -8,7 +8,7 @@ class Config:
 
     # Security setting: Restrict to specific models
     # Can be overridden in Streamlit Secrets
-    ALLOWED_MODELS = ["gemini-1.5-flash", "gemini-2.0-flash", "gemini-1.5-pro"]
+    ALLOWED_MODELS = ["gemini-2.5-flash", "gemini-2.5-pro"]
 
     # Google Cloud ADC settings
     GOOGLE_CLOUD_PROJECT = os.getenv("GOOGLE_CLOUD_PROJECT", "your-project-id")
@@ -146,7 +146,7 @@ class Config:
                 'preview' in name.lower(),
                 name
             ))
-            return available if available else ['gemini-1.5-flash']
+            return available if available else ['gemini-2.5-flash']
         except Exception as e:
             print(f"⚠️ Could not fetch Gemini model list: {e}")
-            return ['gemini-1.5-flash']
+            return ['gemini-2.5-flash']
