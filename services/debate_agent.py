@@ -15,10 +15,10 @@ from tenacity import retry, stop_after_attempt, wait_exponential
 
 class BaseAgent:
     def __init__(self):
-        credentials, _ = default()
+        credentials, project = Config.get_gcp_credentials()
         self.client = genai.Client(
             vertexai=True,
-            project=Config.GOOGLE_CLOUD_PROJECT,
+            project=project or Config.GOOGLE_CLOUD_PROJECT,
             location=Config.GOOGLE_CLOUD_LOCATION,
             credentials=credentials
         )

@@ -10,7 +10,7 @@ from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_excep
 class PubMedService:
     def __init__(self):
         self.base_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils"
-        self.api_key = Config.PUBMED_API_KEY
+        self.api_key = Config.get_pubmed_api_key()
 
     @retry(
         stop=stop_after_attempt(3),
