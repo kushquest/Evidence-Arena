@@ -16,7 +16,7 @@ class DebateOrchestrator:
         self.synthesis_agent = SynthesisAgent()
         self.search_agent = SearchAgent()
 
-    @retry(stop=stop_after_attempt(2), wait=wait_exponential(multiplier=1, min=2, max=5))
+    @retry(stop=stop_after_attempt(2), wait=wait_exponential(multiplier=1, min=2, max=5), reraise=True)
     async def run_full_pipeline(self, vision: str):
         """Self-healing orchestrator pipeline"""
         # 1. AI-Optimized Query

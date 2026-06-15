@@ -23,7 +23,7 @@ class BaseAgent:
             credentials=credentials
         )
 
-    @retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=2, max=10))
+    @retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=2, max=10), reraise=True)
     async def call_gemini(self, prompt: str, is_json: bool = True) -> str:
         config = {'max_output_tokens': 8192}
         if is_json:
