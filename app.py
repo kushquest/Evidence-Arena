@@ -3,11 +3,45 @@ import asyncio
 import pandas as pd
 import re
 import time
+import os
 from core.orchestrator import DebateOrchestrator
 from models.schemas import DebateReport, DebateRound, AgentRole, Citation
 
 # --- PAGE SETUP ---
 st.set_page_config(page_title="EvidenceArena", page_icon="⚔️", layout="wide")
+
+# --- ACCESS CONTROL / PASSWORD SAFEGUARD ---
+def check_password():
+    """Returns True if the user entered the correct password (if configured)."""
+    password = os.getenv("ACCESS_PASSWORD", "")
+    try:
+        if hasattr(st, "secrets") and st.secrets and "ACCESS_PASSWORD" in st.secrets:
+            password = st.secrets["ACCESS_PASSWORD"]
+    except Exception:
+        pass
+
+    if not password:
+        return True
+
+    if "password_correct" not in st.session_state:
+        st.session_state.password_correct = False
+
+    if st.session_state.password_correct:
+        return True
+
+    # Show entry form
+    st.warning("🔒 This application is password-protected to prevent unauthorized usage.")
+    user_pass = st.text_input("Enter Passcode", type="password")
+    if st.button("Unlock Application", type="primary"):
+        if user_pass == password:
+            st.session_state.password_correct = True
+            st.rerun()
+        else:
+            st.error("❌ Incorrect passcode.")
+    return False
+
+if not check_password():
+    st.stop()
 
 # --- CUSTOM CSS ---
 st.markdown("""
@@ -107,6 +141,8 @@ if "rounds" not in st.session_state:
     st.session_state.rounds = []
 if "debate_report" not in st.session_state:
     st.session_state.debate_report = None
+if "audits_run" not in st.session_state:
+    st.session_state.audits_run = 0
 
 # --- MAIN UI ---
 st.markdown("<div class='main-header'>⚔️ EvidenceArena</div>", unsafe_allow_html=True)
@@ -127,7 +163,35 @@ if st.session_state.step == "input":
     user_vision = st.text_area("What research vision shall we audit?", placeholder="e.g., Effectiveness of AI for TB screening...", height=150)
     
     if st.button("⚔️ INITIATE ADVERSARIAL AUDIT", type="primary"):
-        if user_vision and Config.GEMINI_MODEL:
+        # 1. Access limit / Rate-limiting safeguard
+        max_audits = 5
+        try:
+            if hasattr(st, "secrets") and st.secrets and "MAX_AUDITS_PER_SESSION" in st.secrets:
+                max_audits = int(st.secrets["MAX_AUDITS_PER_SESSION"])
+        except Exception:
+            pass
+            
+        if st.session_state.audits_run >= max_audits:
+            st.error(f"❌ Session limit reached: You can run a maximum of {max_audits} audits per session to prevent excessive API usage.")
+            st.stop()
+            
+        # 2. Input validation / Length limit safeguard
+        if not user_vision:
+            st.error("Please enter a research vision.")
+            st.stop()
+            
+        if len(user_vision) > 500:
+            st.error("❌ Input vision is too long (maximum 500 characters). Please provide a more concise vision.")
+            st.stop()
+            
+        # 3. Prompt injection safeguard
+        injection_keywords = ["ignore instructions", "ignore previous", "override system", "system prompt", "you are now a"]
+        if any(kw in user_vision.lower() for kw in injection_keywords):
+            st.error("❌ Security violation: Input contains blocked keywords or suspected prompt injection patterns.")
+            st.stop()
+            
+        if Config.GEMINI_MODEL:
+            st.session_state.audits_run += 1
             st.session_state.vision = user_vision
             st.session_state.rounds = []
             

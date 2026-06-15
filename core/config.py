@@ -6,6 +6,10 @@ load_dotenv()
 class Config:
     LLM_PROVIDER = "gemini"
 
+    # Security setting: Restrict to specific models (e.g., ['gemini-3.5-flash'])
+    # Leave empty [] to allow all models
+    ALLOWED_MODELS = ["gemini-3.5-flash"]
+
     # Google Cloud ADC settings
     GOOGLE_CLOUD_PROJECT = os.getenv("GOOGLE_CLOUD_PROJECT", "your-project-id")
     GOOGLE_CLOUD_LOCATION = os.getenv("GOOGLE_CLOUD_LOCATION", "us-central1")
@@ -124,7 +128,8 @@ class Config:
                 name = m.name
                 if 'gemini' in name.lower() and 'embedding' not in name.lower():
                     display_name = name.split('/')[-1]
-                    available.append(display_name)
+                    if not cls.ALLOWED_MODELS or any(allowed in display_name for allowed in cls.ALLOWED_MODELS):
+                        available.append(display_name)
             
             available = list(set(available))
             available.sort(key=lambda name: (
@@ -133,7 +138,7 @@ class Config:
                 'preview' in name.lower(),
                 name
             ))
-            return available if available else ['gemini-2.0-flash', 'gemini-1.5-pro']
+            return available if available else ['gemini-3.5-flash']
         except Exception as e:
             print(f"⚠️ Could not fetch Gemini model list: {e}")
-            return ['gemini-2.0-flash', 'gemini-1.5-pro']
+            return ['gemini-3.5-flash']
