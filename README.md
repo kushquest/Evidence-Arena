@@ -2,6 +2,8 @@
 
 **Adversarial Evidence Synthesis & High-Fidelity Scientific Audit**
 
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://evidence-arena.streamlit.app/)
+
 EvidenceArena is a clinical-grade research orchestration system that uses dual-agent adversarial AI to stress-test medical hypotheses against real-world evidence from PubMed. 
 
 Unlike standard "search and summarize" tools, EvidenceArena spawns two opposing agents (**PRO** and **CON**) that engage in a 3-round "ruthless" debate, citing hyperlinked scientific evidence to destroy each other's arguments.
