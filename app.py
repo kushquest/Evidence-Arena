@@ -76,6 +76,20 @@ st.markdown("""
     .rigor-attack { background: #fff3f3; border: 1px dashed #f44336; color: #b71c1c; padding: 0.75rem; border-radius: 6px; font-size: 0.95rem; margin-top: 0.5rem; font-style: italic; }
     .pmid-link { color: #1565C0; font-weight: 700; text-decoration: underline; }
     .iron-clad-card { background: #1a1a2e; color: white; border-left: 8px solid #ff9800; padding: 1.5rem; border-radius: 8px; margin: 1rem 0; }
+    .footer {
+        text-align: center;
+        padding: 1.5rem 0;
+        font-size: 0.95rem;
+        color: #5c5c70;
+        font-weight: 500;
+        border-top: 1px solid #e2e8f0;
+        margin-top: 4rem;
+        letter-spacing: 0.5px;
+    }
+    .footer-highlight {
+        color: #1a1a2e;
+        font-weight: 700;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -387,3 +401,11 @@ elif st.session_state.step == "results" and st.session_state.debate_report:
         st.session_state.rounds = []
         st.session_state.debate_report = None
         st.rerun()
+
+# --- FOOTER ---
+st.markdown("""
+<div class='footer'>
+    Built by <span class='footer-highlight'>Kushagra Shiromani</span>
+</div>
+""", unsafe_allow_html=True)
+
