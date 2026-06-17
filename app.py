@@ -46,7 +46,16 @@ if not check_password():
 # --- CUSTOM CSS ---
 st.markdown("""
 <style>
-    .main-header { text-align: left; color: #1a1a2e; font-size: 2.5rem; font-weight: 800; margin-bottom: 0rem; }
+    /* Default / Light Theme */
+    .main-header { 
+        text-align: left; 
+        font-size: 2.5rem; 
+        font-weight: 800; 
+        margin-bottom: 0rem; 
+        background: linear-gradient(90deg, #1a1a2e 0%, #1565C0 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
     .vision-header { 
         background-color: #f0f2f6; 
         padding: 1.5rem; 
@@ -55,6 +64,7 @@ st.markdown("""
         margin: 1rem 0;
         font-size: 1.2rem;
         font-weight: 500;
+        color: #1a1a2e;
     }
     .live-thinking {
         font-family: 'Courier New', monospace;
@@ -70,11 +80,37 @@ st.markdown("""
     }
     .thinking-label { font-weight: 700; margin-bottom: 0.5rem; color: #4a4a6a; }
     .agent-card { border-radius: 12px; padding: 1.5rem; height: 100%; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-    .pro-card { background: linear-gradient(135deg, #e8f4fd 0%, #d4e9f7 100%); border-left: 5px solid #2196F3; }
-    .con-card { background: linear-gradient(135deg, #fde8e8 0%, #f7d4d4 100%); border-left: 5px solid #F44336; }
-    .opening-stmt { font-size: 1.1rem; line-height: 1.6; padding: 1rem; background: rgba(255,255,255,0.7); border-radius: 8px; margin: 1rem 0; }
-    .rigor-attack { background: #fff3f3; border: 1px dashed #f44336; color: #b71c1c; padding: 0.75rem; border-radius: 6px; font-size: 0.95rem; margin-top: 0.5rem; font-style: italic; }
+    .pro-card { 
+        background: linear-gradient(135deg, #e8f4fd 0%, #d4e9f7 100%); 
+        border-left: 5px solid #2196F3; 
+        color: #0d47a1;
+    }
+    .con-card { 
+        background: linear-gradient(135deg, #fde8e8 0%, #f7d4d4 100%); 
+        border-left: 5px solid #F44336; 
+        color: #b71c1c;
+    }
+    .opening-stmt { 
+        font-size: 1.1rem; 
+        line-height: 1.6; 
+        padding: 1rem; 
+        background: rgba(255,255,255,0.75); 
+        border-radius: 8px; 
+        margin: 1rem 0; 
+        color: #1a1a2e;
+    }
+    .rigor-attack { 
+        background: #fff3f3; 
+        border: 1px dashed #f44336; 
+        color: #b71c1c; 
+        padding: 0.75rem; 
+        border-radius: 6px; 
+        font-size: 0.95rem; 
+        margin-top: 0.5rem; 
+        font-style: italic; 
+    }
     .pmid-link { color: #1565C0; font-weight: 700; text-decoration: underline; }
+    .iron-clad-card .pmid-link { color: #60a5fa !important; }
     .iron-clad-card { background: #1a1a2e; color: white; border-left: 8px solid #ff9800; padding: 1.5rem; border-radius: 8px; margin: 1rem 0; }
     .footer {
         text-align: center;
@@ -89,6 +125,52 @@ st.markdown("""
     .footer-highlight {
         color: #1a1a2e;
         font-weight: 700;
+    }
+
+    /* Dark Theme Adaptive Overrides */
+    @media (prefers-color-scheme: dark) {
+        .main-header {
+            background: linear-gradient(90deg, #60a5fa 0%, #34d399 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .vision-header {
+            background-color: #1e293b;
+            border-left: 10px solid #60a5fa;
+            color: #f8fafc;
+        }
+        .thinking-label {
+            color: #94a3b8;
+        }
+        .pro-card {
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+            border-left: 5px solid #3b82f6;
+            color: #f1f5f9;
+        }
+        .con-card {
+            background: linear-gradient(135deg, #180c0c 0%, #4c1d1d 100%);
+            border-left: 5px solid #f87171;
+            color: #fef2f2;
+        }
+        .opening-stmt {
+            background: rgba(15, 23, 42, 0.6);
+            color: #e2e8f0;
+        }
+        .rigor-attack {
+            background: #2d1010;
+            border: 1px dashed #f87171;
+            color: #fca5a5;
+        }
+        .pmid-link {
+            color: #60a5fa;
+        }
+        .footer {
+            color: #94a3b8;
+            border-top: 1px solid #334155;
+        }
+        .footer-highlight {
+            color: #38bdf8;
+        }
     }
 </style>
 """, unsafe_allow_html=True)
